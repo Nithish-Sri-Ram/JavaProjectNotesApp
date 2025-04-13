@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">JavaNotesApp</string>
+    <string name="recycler_view_description">List of notes</string>
+    <string name="no_notes_available">No notes available</string>
+    <string name="note_title_description">Title of the note</string>
+    <string name="note_content_description">Content of the note</string>
 </resources>

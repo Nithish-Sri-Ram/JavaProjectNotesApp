@@ -2,28 +2,34 @@ package com.project.javanotesapp.model;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
-import com.project.javanotesapp.dao.NoteDao;
 import com.project.javanotesapp.entity.NoteEntity;
-import com.project.javanotesapp.repository.NoteRepository;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class NoteListViewModel extends ViewModel {
-    private final NoteRepository repository;
-    private final MutableLiveData<String> searchQuery = new MutableLiveData<>();
-
-    public NoteListViewModel(NoteRepository repository) {
-        this.repository = repository;
-    }
+    private final MutableLiveData<List<NoteEntity>> notes = new MutableLiveData<>(Collections.emptyList());
 
     public LiveData<List<NoteEntity>> getNotes() {
-        return Transformations.switchMap(searchQuery, repository::searchNotes);
+        return notes;
     }
 
-    public void setSearchQuery(String query) {
-        searchQuery.setValue(query);
+    // Load notes from a data source (e.g., database)
+    public void loadNotes() {
+        // Replace with actual data loading logic
+        List<NoteEntity> dummyNotes = Arrays.asList(
+                new NoteEntity("Note 1", "Content 1"),
+                new NoteEntity("Note 2", "Content 2")
+        );
+
+        for (NoteEntity note : dummyNotes) {
+            note.colorHex = 0xFF000000L; // Example color
+            note.created = System.currentTimeMillis();
+        }
+
+        notes.setValue(dummyNotes);
     }
 }

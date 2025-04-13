@@ -7,10 +7,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.project.javanotesapp.entity.NoteEntity;
 
+import java.util.Collections;
 import java.util.List;
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
-    private List<NoteEntity> notes;
+    private List<NoteEntity> notes = Collections.emptyList(); // Initialize with an empty list
 
     public void setNotes(List<NoteEntity> notes) {
         this.notes = notes;
@@ -30,6 +31,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
 
     @Override
     public int getItemCount() {
-        return notes != null ? notes.size() : 0;
+        return notes.size();
     }
 }

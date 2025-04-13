@@ -12,6 +12,14 @@ public class NoteEntity {
     public Long colorHex;
     public Long created;
 
+    public NoteEntity(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+
+    public NoteEntity() {
+    }
+
     public String getTitle() { return title; }
     public String getContent() { return content; }
     public void setTitle(String title) { this.title = title; }

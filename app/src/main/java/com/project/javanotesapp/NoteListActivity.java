@@ -1,8 +1,8 @@
 package com.project.javanotesapp;
 
 import android.os.Bundle;
-
-import com.project.javanotesapp.R;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -22,16 +22,23 @@ public class NoteListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_note_list);
 
         recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        TextView emptyView = findViewById(R.id.empty_view);
 
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new NoteAdapter();
         recyclerView.setAdapter(adapter);
 
         viewModel = new ViewModelProvider(this).get(NoteListViewModel.class);
+        viewModel.loadNotes(); // Add this line
         viewModel.getNotes().observe(this, notes -> {
-            adapter.setNotes(notes);
+            if (notes == null || notes.isEmpty()) {
+                emptyView.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
+            } else {
+                emptyView.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+                adapter.setNotes(notes);
+            }
         });
     }
 }
-
-
