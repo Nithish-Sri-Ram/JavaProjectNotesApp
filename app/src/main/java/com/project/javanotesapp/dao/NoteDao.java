@@ -23,4 +23,7 @@ public interface NoteDao {
 
     @Delete
     void deleteNote(NoteEntity note);
+
+    @Query("SELECT * FROM noteEntity WHERE title LIKE '%' || :query || '%' OR content LIKE '%' || :query || '%'")
+    List<NoteEntity> searchNotes(String query);
 }
