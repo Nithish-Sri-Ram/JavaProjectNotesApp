@@ -50,7 +50,7 @@ public class NoteAdapter extends ListAdapter<NoteEntity, NoteViewHolder> {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.note_item, parent, false);
         NoteViewHolder holder = new NoteViewHolder(view);
-        holder.setClickListener(clickListener);
+        holder.setClickListener(clickListener); // Now works with the new method
         return holder;
     }
 
@@ -58,17 +58,19 @@ public class NoteAdapter extends ListAdapter<NoteEntity, NoteViewHolder> {
     public void onBindViewHolder(@NonNull NoteViewHolder holder, int position) {
         try {
             NoteEntity note = getItem(position);
+
+            // Trim content to the first 50 characters with ellipsis
+            String trimmedContent = note.getContent();
+            if (trimmedContent != null && trimmedContent.length() > 50) {
+                trimmedContent = trimmedContent.substring(0, 50) + "...";
+                note.setContent(trimmedContent); // Update content in the entity for consistency
+            }
+
             holder.bind(note);
 
-            // Add this explicit click handler with error handling
             holder.itemView.setOnClickListener(v -> {
-                try {
-                    if (clickListener != null) {
-                        clickListener.onNoteClicked(note);
-                    }
-                } catch (Exception e) {
-                    android.util.Log.e("NoteAdapter", "Error in click listener: " + e.getMessage());
-                    e.printStackTrace();
+                if (clickListener != null) {
+                    clickListener.onNoteClicked(note);
                 }
             });
         } catch (Exception e) {
@@ -76,6 +78,7 @@ public class NoteAdapter extends ListAdapter<NoteEntity, NoteViewHolder> {
             e.printStackTrace();
         }
     }
+
 
 
 

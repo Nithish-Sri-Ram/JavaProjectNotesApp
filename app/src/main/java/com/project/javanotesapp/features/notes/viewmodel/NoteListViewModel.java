@@ -53,4 +53,18 @@ public class NoteListViewModel extends ViewModel {
             }
         });
     }
+
+    public void deleteNote(NoteEntity note) {
+        executor.execute(() -> {
+            if (noteDao != null) {
+                // Delete the note from database
+                noteDao.deleteNote(note);
+
+                // Reload notes to update UI after deletion
+                loadNotes();
+            } else {
+                android.util.Log.e("NoteListViewModel", "noteDao is null in deleteNote()");
+            }
+        });
+    }
 }

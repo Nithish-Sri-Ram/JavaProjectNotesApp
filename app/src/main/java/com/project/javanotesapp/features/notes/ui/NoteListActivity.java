@@ -8,9 +8,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -60,14 +62,48 @@ public class NoteListActivity extends AppCompatActivity implements NoteViewHolde
             } else {
                 emptyView.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
+
+                // Submit trimmed notes list to adapter
+                for (NoteEntity note : notes) {
+                    if (note.getContent() != null && note.getContent().length() > 50) {
+                        note.setContent(note.getContent().substring(0, 50) + "...");
+                    }
+                }
+
                 adapter.submitList(notes);
-                // Add this line for debugging
+
                 Toast.makeText(this, "Loaded " + notes.size() + " notes", Toast.LENGTH_SHORT).show();
             }
         });
 
+
         // Handle "Add Note" button click
         fabAddNote.setOnClickListener(v -> showAddNoteDialog());
+
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                NoteEntity noteToDelete = adapter.getCurrentList().get(position);
+
+                // Delete the note using ViewModel
+                viewModel.deleteNote(noteToDelete);
+
+                // Show confirmation message
+                Toast.makeText(NoteListActivity.this, "Note deleted", Toast.LENGTH_SHORT).show();
+
+                // Reload notes to update the UI
+                viewModel.loadNotes();
+            }
+        };
+
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
+
     }
 
     private void showAddNoteDialog() {
@@ -118,17 +154,8 @@ public class NoteListActivity extends AppCompatActivity implements NoteViewHolde
     @Override
     public void onNoteClicked(NoteEntity note) {
         try {
-            // Create a new note if the passed note is null
-            if (note == null) {
-                note = new NoteEntity("New Note", "");
-                note.setId(-1L); // Use -1 to indicate this is a new note
-                Toast.makeText(this, "Creating a new note", Toast.LENGTH_SHORT).show();
-            }
-
-            // Navigate to NoteDetailActivity when a note is clicked
             Intent intent = new Intent(this, NoteDetailActivity.class);
 
-            // Use a safe default value (-1) if ID is null
             long noteId = (note.getId() != null) ? note.getId() : -1L;
             intent.putExtra("note_id", noteId);
             intent.putExtra("note_title", note.getTitle() != null ? note.getTitle() : "");
@@ -136,12 +163,11 @@ public class NoteListActivity extends AppCompatActivity implements NoteViewHolde
 
             startActivityForResult(intent, EDIT_NOTE_REQUEST);
         } catch (Exception e) {
-            // Catch any exceptions to prevent crashes
-            Toast.makeText(this, "Error opening note: " + e.getMessage(),
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error opening note: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }
+
 
 
 

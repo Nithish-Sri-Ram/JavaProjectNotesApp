@@ -9,7 +9,17 @@
     </style>
 
     <!-- Splash screen theme -->
-    <style name="AppTheme.Splash" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="android:windowBackground">@color/white</item>
+    <style name="AppTheme.Splash" parent="Theme.SplashScreen">
+        <!-- Set background color for splash -->
+        <item name="windowSplashScreenBackground">@color/background_color</item>
+
+        <!-- Set an animated icon or logo -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+
+        <!-- Set animation duration -->
+        <item name="windowSplashScreenAnimationDuration">2000</item>
+
+        <!-- Post-splash theme -->
+        <item name="postSplashScreenTheme">@style/Theme.JavaNotesApp</item>
     </style>
 </resources>
