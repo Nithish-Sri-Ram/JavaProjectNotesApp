@@ -28,11 +28,14 @@ public class NoteAdapter extends ListAdapter<NoteEntity, NoteViewHolder> {
             new DiffUtil.ItemCallback<NoteEntity>() {
                 @Override
                 public boolean areItemsTheSame(NoteEntity oldItem, NoteEntity newItem) {
-                    // Handle null IDs safely
-                    if (oldItem.id == null || newItem.id == null) {
+                    // Handle null IDs properly
+                    if (oldItem == null || newItem == null) {
                         return oldItem == newItem;
                     }
-                    return oldItem.id.equals(newItem.id);
+                    if (oldItem.getId() == null || newItem.getId() == null) {
+                        return false;
+                    }
+                    return oldItem.getId().equals(newItem.getId());
                 }
 
                 @Override
@@ -53,8 +56,28 @@ public class NoteAdapter extends ListAdapter<NoteEntity, NoteViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull NoteViewHolder holder, int position) {
-        holder.bind(getItem(position));
+        try {
+            NoteEntity note = getItem(position);
+            holder.bind(note);
+
+            // Add this explicit click handler with error handling
+            holder.itemView.setOnClickListener(v -> {
+                try {
+                    if (clickListener != null) {
+                        clickListener.onNoteClicked(note);
+                    }
+                } catch (Exception e) {
+                    android.util.Log.e("NoteAdapter", "Error in click listener: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            });
+        } catch (Exception e) {
+            android.util.Log.e("NoteAdapter", "Error binding view holder: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
+
+
 
     // Method to set click listener after initialization
     public void setOnNoteClickListener(NoteViewHolder.NoteClickListener listener) {

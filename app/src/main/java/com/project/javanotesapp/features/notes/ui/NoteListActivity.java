@@ -18,6 +18,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.project.javanotesapp.R;
 import com.project.javanotesapp.adapters.NoteAdapter;
 import com.project.javanotesapp.adapters.NoteViewHolder;
+import com.project.javanotesapp.database.NoteDatabase;
 import com.project.javanotesapp.features.notes.local.NoteEntity;
 import com.project.javanotesapp.features.notes.viewmodel.NoteListViewModel;
 
@@ -42,8 +43,15 @@ public class NoteListActivity extends AppCompatActivity implements NoteViewHolde
         adapter = new NoteAdapter(this);
         recyclerView.setAdapter(adapter);
 
+        // Initialize ViewModel FIRST
         viewModel = new ViewModelProvider(this).get(NoteListViewModel.class);
-        viewModel.loadNotes(); // Load initial notes
+
+        // THEN set the DAO
+        NoteDatabase database = NoteDatabase.getInstance(this);
+        viewModel.setNoteDao(database.noteDao());
+
+        // Now load the notes
+        viewModel.loadNotes();
 
         viewModel.getNotes().observe(this, notes -> {
             if (notes == null || notes.isEmpty()) {
@@ -53,6 +61,8 @@ public class NoteListActivity extends AppCompatActivity implements NoteViewHolde
                 emptyView.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
                 adapter.submitList(notes);
+                // Add this line for debugging
+                Toast.makeText(this, "Loaded " + notes.size() + " notes", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -107,22 +117,33 @@ public class NoteListActivity extends AppCompatActivity implements NoteViewHolde
 
     @Override
     public void onNoteClicked(NoteEntity note) {
-        // Make sure the ID is not null before using it
-        if (note == null) {
-            Toast.makeText(this, "Cannot open note: Note is null", Toast.LENGTH_SHORT).show();
-            return;
+        try {
+            // Create a new note if the passed note is null
+            if (note == null) {
+                note = new NoteEntity("New Note", "");
+                note.setId(-1L); // Use -1 to indicate this is a new note
+                Toast.makeText(this, "Creating a new note", Toast.LENGTH_SHORT).show();
+            }
+
+            // Navigate to NoteDetailActivity when a note is clicked
+            Intent intent = new Intent(this, NoteDetailActivity.class);
+
+            // Use a safe default value (-1) if ID is null
+            long noteId = (note.getId() != null) ? note.getId() : -1L;
+            intent.putExtra("note_id", noteId);
+            intent.putExtra("note_title", note.getTitle() != null ? note.getTitle() : "");
+            intent.putExtra("note_content", note.getContent() != null ? note.getContent() : "");
+
+            startActivityForResult(intent, EDIT_NOTE_REQUEST);
+        } catch (Exception e) {
+            // Catch any exceptions to prevent crashes
+            Toast.makeText(this, "Error opening note: " + e.getMessage(),
+                    Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
         }
-
-        // Navigate to NoteDetailActivity when a note is clicked
-        Intent intent = new Intent(this, NoteDetailActivity.class);
-
-        // Use a safe default value (-1) if ID is null
-        long noteId = (note.getId() != null) ? note.getId() : -1L;
-        intent.putExtra("note_id", noteId);
-        intent.putExtra("note_title", note.getTitle());
-        intent.putExtra("note_content", note.getContent());
-        startActivityForResult(intent, EDIT_NOTE_REQUEST);
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

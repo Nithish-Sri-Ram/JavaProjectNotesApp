@@ -26,11 +26,15 @@ public class NoteListViewModel extends ViewModel {
         return notes;
     }
 
+    // In loadNotes() method of NoteListViewModel
     public void loadNotes() {
         executor.execute(() -> {
             if (noteDao != null) {
                 List<NoteEntity> noteList = noteDao.getAllNotes();
+                android.util.Log.d("NoteListViewModel", "Loaded " + noteList.size() + " notes");
                 notes.postValue(noteList);
+            } else {
+                android.util.Log.e("NoteListViewModel", "noteDao is null in loadNotes()");
             }
         });
     }
@@ -41,12 +45,11 @@ public class NoteListViewModel extends ViewModel {
                 // Insert the note
                 noteDao.insertNote(note);
 
-                // Get the last inserted ID and set it on the note
-                long lastId = noteDao.getLastInsertedId();
-                note.setId(lastId);
-
                 // Reload notes to update the UI
                 loadNotes();
+            } else {
+                // For debugging: log when noteDao is null
+                android.util.Log.e("NoteListViewModel", "noteDao is null");
             }
         });
     }

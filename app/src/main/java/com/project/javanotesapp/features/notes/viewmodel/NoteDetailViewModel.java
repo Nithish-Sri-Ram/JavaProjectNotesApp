@@ -13,6 +13,11 @@ public class NoteDetailViewModel extends ViewModel {
     private final Executor executor = Executors.newSingleThreadExecutor();
     private NoteDao noteDao; // Should be properly initialized via dependency injection
 
+    // Default constructor required by ViewModelProvider
+    public NoteDetailViewModel() {
+        // Empty constructor
+    }
+
     // This is for demonstration purposes - in a real app use dependency injection
     public void setNoteDao(NoteDao noteDao) {
         this.noteDao = noteDao;
@@ -31,6 +36,8 @@ public class NoteDetailViewModel extends ViewModel {
                     // This is an existing note, so update it
                     noteDao.updateNote(note);
                 }
+            } else {
+                android.util.Log.e("NoteDetailViewModel", "noteDao is null in updateNote()");
             }
         });
     }

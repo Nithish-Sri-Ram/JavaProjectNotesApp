@@ -29,20 +29,20 @@ public class NoteViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(NoteEntity note) {
-        titleTextView.setText(note.getTitle());
+        if (note != null) {
+            titleTextView.setText(note.getTitle() != null ? note.getTitle() : "");
 
-        // Show a preview of content or a placeholder
-        String contentPreview = note.getContent();
-        if (contentPreview == null || contentPreview.isEmpty()) {
-            contentPreview = "No content";
-        } else if (contentPreview.length() > 50) {
-            contentPreview = contentPreview.substring(0, 50) + "...";
-        }
-        contentTextView.setText(contentPreview);
-
-        // Set click listener
-        if (listener != null) {
-            itemView.setOnClickListener(v -> listener.onNoteClicked(note));
+            // Show a preview of content or a placeholder
+            String contentPreview = note.getContent();
+            if (contentPreview == null || contentPreview.isEmpty()) {
+                contentPreview = "No content";
+            } else if (contentPreview.length() > 50) {
+                contentPreview = contentPreview.substring(0, 50) + "...";
+            }
+            contentTextView.setText(contentPreview);
+        } else {
+            titleTextView.setText("");
+            contentTextView.setText("No content");
         }
     }
 }
