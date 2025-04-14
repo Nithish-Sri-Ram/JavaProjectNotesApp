@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.project.javanotesapp.entity.NoteEntity;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -32,4 +33,12 @@ public class NoteListViewModel extends ViewModel {
 
         notes.setValue(dummyNotes);
     }
+
+    // NoteListViewModel.java
+    public void addNote(NoteEntity newNote) {
+        List<NoteEntity> currentNotes = new ArrayList<>(notes.getValue());
+        currentNotes.add(newNote);
+        notes.setValue(currentNotes);
+    }
+
 }

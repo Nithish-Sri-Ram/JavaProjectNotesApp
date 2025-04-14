@@ -4,4 +4,10 @@
     <string name="no_notes_available">No notes available</string>
     <string name="note_title_description">Title of the note</string>
     <string name="note_content_description">Content of the note</string>
+    <string name="the_notes_app">The Notes App</string>
+    <string name="add_note_button_description">Add a new note</string>
+    <string name="add_notes">Add Notes</string>
+    <string name="title_hint">Enter title</string>
+    <string name="content_hint">Enter content</string>
+    <string name="dialog_title">New Note</string>
 </resources>

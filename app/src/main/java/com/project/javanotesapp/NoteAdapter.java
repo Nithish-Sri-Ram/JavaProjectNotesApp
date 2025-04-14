@@ -1,36 +1,46 @@
-// NoteAdapter.java
 package com.project.javanotesapp;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.project.javanotesapp.entity.NoteEntity;
 
-import java.util.Collections;
-import java.util.List;
 
-public class NoteAdapter extends RecyclerView.Adapter<NoteViewHolder> {
-    private List<NoteEntity> notes = Collections.emptyList(); // Initialize with an empty list
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 
-    public void setNotes(List<NoteEntity> notes) {
-        this.notes = notes;
-        notifyDataSetChanged();
+public class NoteAdapter extends ListAdapter<NoteEntity, NoteViewHolder> {
+    public NoteAdapter() {
+        super(DIFF_CALLBACK);
     }
+
+    private static final DiffUtil.ItemCallback<NoteEntity> DIFF_CALLBACK =
+            new DiffUtil.ItemCallback<>() {
+                @Override
+                public boolean areItemsTheSame(NoteEntity oldItem, NoteEntity newItem) {
+                    // Handle null IDs safely
+                    if (oldItem.id == null || newItem.id == null) {
+                        return oldItem == newItem;
+                    }
+                    return oldItem.id.equals(newItem.id);
+                }
+
+                @Override
+                public boolean areContentsTheSame(NoteEntity oldItem, NoteEntity newItem) {
+                    return oldItem.equals(newItem);
+                }
+            };
 
     @Override
     public NoteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        return new NoteViewHolder(inflater.inflate(R.layout.note_item, parent, false));
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.note_item, parent, false);
+        return new NoteViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(NoteViewHolder holder, int position) {
-        holder.bind(notes.get(position));
-    }
-
-    @Override
-    public int getItemCount() {
-        return notes.size();
+        holder.bind(getItem(position));
     }
 }

@@ -12,11 +12,11 @@ import java.util.List;
 
 @Dao
 public interface NoteDao {
-    @Query("SELECT * FROM noteEntity")
+    @Query("SELECT * FROM noteEntity ORDER BY created DESC")
     List<NoteEntity> getAllNotes();
 
     @Query("SELECT * FROM noteEntity WHERE id = :id")
-    NoteEntity getNoteById(long id);
+    NoteEntity getNoteById(long id);  // Changed back to long to match implementation
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertNote(NoteEntity note);
@@ -24,6 +24,6 @@ public interface NoteDao {
     @Delete
     void deleteNote(NoteEntity note);
 
-    @Query("SELECT * FROM noteEntity WHERE title LIKE '%' || :query || '%' OR content LIKE '%' || :query || '%'")
+    @Query("SELECT * FROM noteEntity WHERE title LIKE '%' || :query || '%' OR content LIKE '%' || :query || '%' ORDER BY created DESC")
     List<NoteEntity> searchNotes(String query);
 }
