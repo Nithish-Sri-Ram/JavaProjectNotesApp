@@ -1,4 +1,4 @@
-package com.project.javanotesapp.entity;
+package com.project.javanotesapp.features.notes.local;
 
 import androidx.room.Entity;
 import androidx.room.Ignore;

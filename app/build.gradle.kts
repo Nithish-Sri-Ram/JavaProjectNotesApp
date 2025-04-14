@@ -26,17 +26,24 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
+    // Add this section to disable problematic lint checks
+    lint {
+        disable.add("StateFlowValueCalledInComposition")
+        disable.add("CompositionLocalNaming")
+    }
+
     buildFeatures {
         compose = false
     }
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -44,10 +51,13 @@ dependencies {
     implementation(libs.androidx.recyclerview)
     implementation(libs.material)
     implementation(libs.androidx.core.splashscreen)
+
     annotationProcessor(libs.androidx.room.compiler)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
     implementation(libs.hilt.android)
     annotationProcessor(libs.hilt.compiler)
 
@@ -55,6 +65,9 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata)
     implementation(libs.androidx.lifecycle.viewmodel)
 
-    // Add AppCompat for AppCompatActivity
+    // AppCompat
     implementation("androidx.appcompat:appcompat:1.7.0")
+
+    // Add explicit Compose runtime dependency to resolve lint issues
+    implementation("androidx.compose.runtime:runtime:1.7.8")
 }

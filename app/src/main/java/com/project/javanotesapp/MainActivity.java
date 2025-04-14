@@ -9,6 +9,8 @@ import androidx.core.splashscreen.SplashScreen;
 
 import androidx.activity.ComponentActivity;
 
+import com.project.javanotesapp.features.notes.ui.NoteListActivity;
+
 public class MainActivity extends ComponentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {

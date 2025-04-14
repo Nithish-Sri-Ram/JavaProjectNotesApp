@@ -22,7 +22,7 @@
 
         <!-- NoteListActivity -->
         <activity
-            android:name=".NoteListActivity"
+            android:name=".features.notes.ui.NoteListActivity"
             android:exported="true" />
 
     </application>

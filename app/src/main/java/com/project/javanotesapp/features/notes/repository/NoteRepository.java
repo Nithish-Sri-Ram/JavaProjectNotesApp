@@ -1,10 +1,10 @@
-package com.project.javanotesapp.repository;
+package com.project.javanotesapp.features.notes.repository;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.project.javanotesapp.dao.NoteDao;
-import com.project.javanotesapp.entity.NoteEntity;
+import com.project.javanotesapp.features.notes.local.NoteDao;
+import com.project.javanotesapp.features.notes.local.NoteEntity;
 
 import java.util.List;
 import java.util.concurrent.Executor;

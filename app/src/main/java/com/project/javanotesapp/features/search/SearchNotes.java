@@ -1,6 +1,6 @@
-package com.project.javanotesapp;
+package com.project.javanotesapp.features.search;
 
-import com.project.javanotesapp.entity.NoteEntity;
+import com.project.javanotesapp.features.notes.local.NoteEntity;
 
 import java.util.Comparator;
 import java.util.List;
